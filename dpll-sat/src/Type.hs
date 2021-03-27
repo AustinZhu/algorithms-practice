@@ -10,4 +10,4 @@ data Dimacs = Dimacs
     cnf :: [[Int]]
   }
 
-data Prop = Var Int | And Prop Prop | Or Prop Prop | Not Prop | Val Bool
+data Prop = Var Int | And Prop Prop | Or Prop Prop | Not Prop | Val Bool deriving (Eq, Show)

@@ -8,18 +8,18 @@ import Type
 
 select :: Prop -> Maybe Int
 select p = case p of
-  Val b -> Nothing
+  Val _ -> Nothing
   Var i -> Just i
   Not (Var i) -> Just i
-  And p1 p2 -> search p1 <|> search p2
-  Or p1 p2 -> search p1 <|> search p2
+  And p1 p2 -> select p1 <|> select p2
+  Or p1 p2 -> select p1 <|> select p2
 
 assign :: Prop -> Int -> Bool -> Prop
 assign p n b = case p of
   Var i -> if i == n then Val b else p
   Not (Var i) -> if i == n then Val (not b) else p
-  And p1 p2 -> And (assign p1 i b) (assign p2 i b)
-  Or p1 p2 -> Or (assign p1 i b) (assign p2 i b)
+  And p1 p2 -> And (assign p1 n b) (assign p2 n b)
+  Or p1 p2 -> Or (assign p1 n b) (assign p2 n b)
   _ -> p
 
 simplify :: Prop -> Prop
@@ -42,11 +42,13 @@ unitPropagate p = case p of
     _ -> And p1 (unitPropagate p2)
   _ -> p
 
-pureLiteralAssign :: Prop -> Prop
-pureLiteralAssign p = case select p of
-  Just i -> tryAssign p i
-  Nothing -> p
-  where
-    tryAssign p i = case p of
-
-dpll :: Prop -> Bool
+-- todo
+--pureLiteralAssign :: Prop -> Prop
+--pureLiteralAssign p = case select p of
+--  Just i -> tryAssign p i
+--  Nothing -> p
+--  where
+--    tryAssign p i =
+--
+--dpll :: Prop -> Bool
+--dpll p = True

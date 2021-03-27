@@ -43,8 +43,7 @@ sym = symbol dimacsTokenParser
 
 parseHeader :: Parser (Int, Int)
 parseHeader = do
-  _ <- sym "p"
-  _ <- sym "cnf"
+  _ <- sym "p cnf"
   fmap (,) nat `ap` nat
 
 parseClause :: Parser [Int]
@@ -61,7 +60,7 @@ parseDimacs = do
 dimacsToProp :: String -> Prop
 dimacsToProp s = foldl1 And clauses
   where
-    toVar n = if n > 0 then Var n else Not (Var n)
+    toVar n = if n > 0 then Var n else Not (Var (- n))
     parsed = case parse parseDimacs "" s of
       Left e -> error (show e)
       Right a -> map (map toVar) $ cnf a
