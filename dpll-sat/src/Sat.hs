@@ -43,12 +43,17 @@ unitPropagate p = case p of
   _ -> p
 
 -- todo
---pureLiteralAssign :: Prop -> Prop
---pureLiteralAssign p = case select p of
---  Just i -> tryAssign p i
---  Nothing -> p
---  where
---    tryAssign p i =
+pureLiteralAssign :: Prop -> Prop
+pureLiteralAssign p = case select p of
+  Just i -> tryAssign p i
+  Nothing -> p
+  where
+    tryFind p' n s = case p' of
+      Var i -> if i == n && s then Just i else Nothing
+      Not (Var i) -> if i == n && not s then Just i else Nothing
+      Or p1 p2 -> tryFind p1 n s <|> tryFind p2 n s
+      And p1 p2 -> tryFind p1 n s <|> tryFind p2 n s
+    tryAssign p' n = tryFind p' n True
 --
 --dpll :: Prop -> Bool
 --dpll p = True
